@@ -8,7 +8,7 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "prepare": "cd .. && husky kaitaku_app/.husky"
+    "prepare": "husky"
   },
   "dependencies": {
     "@pinia/nuxt": "^0.11.3",
