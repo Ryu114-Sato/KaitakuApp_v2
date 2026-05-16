@@ -1,0 +1,11 @@
+[extend]
+useDefault = true
+
+[allowlist]
+description = "allowlist for caretaxi-app"
+regexes = [
+  # プレースホルダ・サンプル値
+  '''your-secret-key-here''',
+  '''mongodb\+srv://<username>''',
+  '''XXXX''',
+]

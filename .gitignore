@@ -1,37 +1,42 @@
-# Compiled source #
-###################
-*.com
-*.class
-*.dll
-*.exe
-*.o
-*.so
+# ===========================
+# 環境変数（絶対にコミットしないこと）
+# ===========================
+.env
+.env.local
+.env.*.local
 
-# Packages #
-############
-# it's better to unpack these files and commit the raw source
-# git has its own built in compression methods
-*.7z
-*.dmg
-*.gz
-*.iso
-*.jar
-*.rar
-*.tar
-*.zip
+# ===========================
+# Nuxt
+# ===========================
+.nuxt/
+.output/
+.data/
+.cache/
+dist/
 
-# Logs and databases #
-######################
-*.log
-*.sql
-*.sqlite
+# ===========================
+# Node
+# ===========================
+node_modules/
 
-# OS generated files #
-######################
+# ===========================
+# 鍵・証明書
+# ===========================
+*.pem
+*.key
+*.p12
+*.pfx
+
+# ===========================
+# OS
+# ===========================
 .DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
 Thumbs.db
+
+# ===========================
+# Editor
+# ===========================
+.vscode/
+.idea/
+*.swp
+*.swo
