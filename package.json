@@ -8,7 +8,7 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "prepare": "husky"
+    "prepare": "husky || true"
   },
   "dependencies": {
     "@nuxtjs/tailwindcss": "^6.14.0",
