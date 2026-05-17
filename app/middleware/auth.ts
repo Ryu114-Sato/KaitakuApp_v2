@@ -1,8 +1,40 @@
 import { useAuthStore } from '~/stores/auth'
 
-export default defineNuxtRouteMiddleware((to) => {
+const PUBLIC_ROUTES = ['/', '/register']
+
+export default defineNuxtRouteMiddleware(async (to) => {
   const auth = useAuthStore()
-  if (!auth.isAuthenticated && to.path !== '/' && to.path !== '/register') {
-    return navigateTo('/')
+
+  // 初回アクセス時はCookieからセッション復元を試みる
+  if (!auth.initialized) {
+    await auth.fetchMe()
+  }
+
+  const isPublic = PUBLIC_ROUTES.includes(to.path)
+
+  // 未認証 → ログイン画面へ
+  if (!auth.isAuthenticated) {
+    if (!isPublic) return navigateTo('/')
+    return
+  }
+
+  // 認証済みでパブリックページ → ロール別ホームへ
+  if (isPublic) {
+    return navigateTo(auth.getHomePath())
+  }
+
+  // ロール別アクセス制御
+  const path = to.path
+  if (path.startsWith('/sw/') && !auth.isSw) {
+    return navigateTo(auth.getHomePath())
+  }
+  if (path.startsWith('/taxi') && !auth.isTaxi) {
+    return navigateTo(auth.getHomePath())
+  }
+  if (path.startsWith('/admin/') && !auth.isAdmin) {
+    return navigateTo(auth.getHomePath())
+  }
+  if (path.startsWith('/user/') && !(auth.isSw || auth.isTaxi)) {
+    return navigateTo(auth.getHomePath())
   }
 })
