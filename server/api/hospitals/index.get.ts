@@ -7,5 +7,6 @@ export default defineEventHandler(async (event) => {
   const filter: Record<string, any> = {}
   if (q.q) filter.name = { $regex: String(q.q), $options: 'i' }
 
-  return await Hospital.find(filter).limit(20).sort({ name: 1 })
+  const hospitals = await Hospital.find(filter).limit(20).sort({ name: 1 })
+  return { success: true, data: hospitals }
 })
