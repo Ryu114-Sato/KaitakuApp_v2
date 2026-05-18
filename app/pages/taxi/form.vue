@@ -10,6 +10,7 @@ const isEdit = computed(() => !!editId.value)
 
 const form = reactive({
   hospitalName: '',
+  hospitalId: '',   // オートコンプリートで選択した場合にセット
   arrivalDate: '',
   arrivalTime: '',
   type: 'consultation' as 'consultation' | 'discharge' | 'transfer',
@@ -105,12 +106,10 @@ const statusOptions: { value: string; label: string }[] = [
           <label class="block text-xs font-medium text-slate-600 mb-1.5">
             病院・施設名 <span class="text-red-500">*</span>
           </label>
-          <input
+          <HospitalAutocomplete
             v-model="form.hospitalName"
-            type="text"
             placeholder="病院名を入力"
-            required
-            class="form-input w-full"
+            @select="(h) => { form.hospitalId = h._id }"
           />
         </div>
 

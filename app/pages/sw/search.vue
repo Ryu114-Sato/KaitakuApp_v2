@@ -7,22 +7,6 @@ const searchDate = ref('')
 const searchTime = ref('')
 const vehicles = ref<string[]>([])
 
-// オートコンプリート
-const suggestions = ref<any[]>([])
-const showSuggest = ref(false)
-
-async function onHospitalInput() {
-  if (hospitalName.value.length < 1) { suggestions.value = []; showSuggest.value = false; return }
-  const res = await $fetch<{ success: boolean; data: any[] }>(`/api/hospitals?q=${encodeURIComponent(hospitalName.value)}`)
-  suggestions.value = res.data ?? []
-  showSuggest.value = suggestions.value.length > 0
-}
-
-function selectHospital(name: string) {
-  hospitalName.value = name
-  showSuggest.value = false
-}
-
 function toggleVehicle(v: string) {
   const i = vehicles.value.indexOf(v)
   if (i >= 0) vehicles.value.splice(i, 1)
@@ -118,31 +102,10 @@ function callPhone() {
             <label class="block text-xs font-medium text-slate-600 mb-1.5">
               迎え場所（病院名）<span class="text-red-500 ml-1">必須</span>
             </label>
-            <div class="relative">
-              <input
-                v-model="hospitalName"
-                type="text"
-                placeholder="病院名を入力（例：A病院）"
-                class="form-input w-full"
-                @input="onHospitalInput"
-                @blur="setTimeout(() => showSuggest = false, 150)"
-              />
-              <!-- オートコンプリート -->
-              <div
-                v-if="showSuggest"
-                class="absolute z-10 w-full mt-1 bg-white border border-slate-200 rounded-lg overflow-hidden shadow-lg"
-              >
-                <button
-                  v-for="s in suggestions"
-                  :key="s._id"
-                  type="button"
-                  class="w-full text-left px-3 py-2.5 text-sm hover:bg-slate-50 border-b border-slate-100 last:border-0 flex items-center gap-2"
-                  @click="selectHospital(s.name)"
-                >
-                  🏥 {{ s.name }}
-                </button>
-              </div>
-            </div>
+            <HospitalAutocomplete
+              v-model="hospitalName"
+              placeholder="病院名を入力（例：A病院）"
+            />
             <p class="text-[11px] text-slate-400 mt-1">※ 病院名マスタから候補を表示します（表記ゆれ防止）</p>
           </div>
 

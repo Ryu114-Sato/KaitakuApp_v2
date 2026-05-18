@@ -94,11 +94,10 @@ async function saveEdit() {
 
       <!-- Toolbar -->
       <div class="flex gap-2.5 mb-4 flex-wrap">
-        <input
+        <HospitalAutocomplete
           v-model="searchQuery"
-          type="text"
           placeholder="病院名で検索..."
-          class="form-input flex-1 min-w-[180px]"
+          class="flex-1 min-w-[180px]"
         />
         <button
           class="px-4 py-2.5 bg-teal-600 hover:bg-teal-700 text-white text-sm font-medium rounded-lg transition-colors"
