@@ -21,6 +21,7 @@ const emit = defineEmits<{
 const suggestions = ref<HospitalOption[]>([])
 const showDropdown = ref(false)
 const fetching = ref(false)
+const fetchError = ref('')
 let timer: ReturnType<typeof setTimeout> | null = null
 
 function onInput(e: Event) {
@@ -28,6 +29,7 @@ function onInput(e: Event) {
   emit('update:modelValue', val)
 
   if (timer) clearTimeout(timer)
+  fetchError.value = ''
 
   if (!val || val.length < 1) {
     suggestions.value = []
@@ -43,9 +45,10 @@ function onInput(e: Event) {
       )
       suggestions.value = res.data ?? []
       showDropdown.value = true
-    } catch {
+    } catch (err: any) {
       suggestions.value = []
       showDropdown.value = false
+      fetchError.value = err?.message ?? '候補の取得に失敗しました'
     } finally {
       fetching.value = false
     }
@@ -82,6 +85,9 @@ function onBlur() {
     <div v-if="fetching" class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
       <div class="w-4 h-4 border-2 border-teal-500 border-t-transparent rounded-full animate-spin" />
     </div>
+
+    <!-- エラー表示 -->
+    <p v-if="fetchError" class="mt-1 text-[11px] text-red-500">{{ fetchError }}</p>
 
     <!-- ドロップダウン -->
     <Transition name="dropdown">
