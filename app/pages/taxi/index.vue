@@ -18,14 +18,19 @@ const grouped = computed(() => {
   return map
 })
 
+// UTC → JST(+9h) に変換（サーバー/ブラウザ両環境で一貫）
+function toJST(dt: string) {
+  return new Date(new Date(dt).getTime() + 9 * 60 * 60 * 1000)
+}
+
 function formatDate(dt: string) {
-  const d = new Date(dt)
-  return `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日`
+  const d = toJST(dt)
+  return `${d.getUTCFullYear()}年${d.getUTCMonth() + 1}月${d.getUTCDate()}日`
 }
 
 function formatTime(dt: string) {
-  const d = new Date(dt)
-  return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
+  const d = toJST(dt)
+  return `${String(d.getUTCHours()).padStart(2, '0')}:${String(d.getUTCMinutes()).padStart(2, '0')}`
 }
 
 const typeLabel: Record<string, string> = {

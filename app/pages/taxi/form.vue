@@ -22,15 +22,20 @@ const form = reactive({
 const loading = ref(false)
 const errorMsg = ref('')
 
+// JST(UTC+9) に変換して日付・時刻の文字列を返すユーティリティ
+function toJST(utcMs: number) {
+  return new Date(utcMs + 9 * 60 * 60 * 1000)
+}
+
 // 編集時：既存データを読み込む
 if (isEdit.value) {
   const { data } = await useFetch<{ success: boolean; data: any[] }>('/api/schedules')
   const existing = data.value?.data?.find((s: any) => s._id === editId.value)
   if (existing) {
-    const dt = new Date(existing.arrivalDateTime)
+    const jst = toJST(new Date(existing.arrivalDateTime).getTime())
     form.hospitalName = existing.hospitalName
-    form.arrivalDate = dt.toISOString().slice(0, 10)
-    form.arrivalTime = `${String(dt.getHours()).padStart(2, '0')}:${String(dt.getMinutes()).padStart(2, '0')}`
+    form.arrivalDate = jst.toISOString().slice(0, 10)   // JST 日付
+    form.arrivalTime = `${String(jst.getUTCHours()).padStart(2, '0')}:${String(jst.getUTCMinutes()).padStart(2, '0')}`
     form.type = existing.type
     form.vehicles = [...existing.vehicles]
     form.status = existing.status
@@ -54,7 +59,7 @@ async function onSubmit() {
 
   const payload = {
     hospitalName: form.hospitalName,
-    arrivalDateTime: `${form.arrivalDate}T${form.arrivalTime}:00`,
+    arrivalDateTime: `${form.arrivalDate}T${form.arrivalTime}:00+09:00`,  // JST 明示
     type: form.type,
     vehicles: form.vehicles,
     status: form.status,

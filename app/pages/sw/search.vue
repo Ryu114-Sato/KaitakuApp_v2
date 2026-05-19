@@ -26,7 +26,7 @@ async function onSearch() {
 
   const params = new URLSearchParams({ hospitalName: hospitalName.value })
   if (searchDate.value && searchTime.value) {
-    params.set('datetime', `${searchDate.value}T${searchTime.value}:00`)
+    params.set('datetime', `${searchDate.value}T${searchTime.value}:00+09:00`)  // JST 明示
   }
   if (vehicles.value.length) {
     params.set('vehicles', vehicles.value.join(','))
@@ -64,9 +64,14 @@ const vehicleLabel: Record<string, string> = {
   stretcher: '🛏 ストレッチャー',
 }
 
+// UTC → JST(+9h) に変換（サーバー/ブラウザ両環境で一貫）
+function toJST(dt: string) {
+  return new Date(new Date(dt).getTime() + 9 * 60 * 60 * 1000)
+}
+
 function formatTime(dt: string) {
-  const d = new Date(dt)
-  return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
+  const d = toJST(dt)
+  return `${String(d.getUTCHours()).padStart(2, '0')}:${String(d.getUTCMinutes()).padStart(2, '0')}`
 }
 
 // 電話発信モーダル
