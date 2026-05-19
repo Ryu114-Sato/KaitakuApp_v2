@@ -26,13 +26,19 @@ export default defineEventHandler(async (event) => {
       status: { $ne: 'cancelled' },
     }
 
-    // 日時指定あり → 前後1時間以内
     if (q.datetime) {
+      // 日時指定あり → 前後1時間以内
       const dt = new Date(String(q.datetime))
       filter.arrivalDateTime = {
         $gte: new Date(dt.getTime() - 60 * 60 * 1000),
         $lte: new Date(dt.getTime() + 60 * 60 * 1000),
       }
+    } else {
+      // 日時指定なし → 本日 JST 0:00 以降（過去スケジュールを除外）
+      const jstOffset = 9 * 60 * 60 * 1000
+      const nowJST    = Date.now() + jstOffset
+      const midnightJST = nowJST - (nowJST % (24 * 60 * 60 * 1000))   // JST 0:00 の UTC ms
+      filter.arrivalDateTime = { $gte: new Date(midnightJST - jstOffset) }
     }
 
     // 車両条件

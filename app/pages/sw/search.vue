@@ -69,6 +69,18 @@ function toJST(dt: string) {
   return new Date(new Date(dt).getTime() + 9 * 60 * 60 * 1000)
 }
 
+const DOW = ['日', '月', '火', '水', '木', '金', '土'] as const
+
+function formatDateTime(dt: string) {
+  const d = toJST(dt)
+  const m   = d.getUTCMonth() + 1
+  const day = d.getUTCDate()
+  const dow = DOW[d.getUTCDay()]
+  const hh  = String(d.getUTCHours()).padStart(2, '0')
+  const mm  = String(d.getUTCMinutes()).padStart(2, '0')
+  return `${m}/${day}(${dow}) ${hh}:${mm}`
+}
+
 function formatTime(dt: string) {
   const d = toJST(dt)
   return `${String(d.getUTCHours()).padStart(2, '0')}:${String(d.getUTCMinutes()).padStart(2, '0')}`
@@ -188,13 +200,13 @@ function callPhone() {
                 ★ 来院予定あり
               </span>
             </div>
-            <div class="text-xs font-semibold text-teal-700 text-right" style="font-family:'DM Sans',sans-serif">
-              到着 {{ formatTime(r.arrivalDateTime) }}
+            <div class="text-xs font-semibold text-teal-700 text-right leading-snug" style="font-family:'DM Sans',sans-serif">
+              到着<br>{{ formatDateTime(r.arrivalDateTime) }}
             </div>
           </div>
 
           <div v-if="r.hospitalName === hospitalName" class="inline-block text-[11px] text-teal-700 bg-teal-100 px-2 py-0.5 rounded mb-2">
-            {{ r.hospitalName }} {{ formatTime(r.arrivalDateTime) }} {{ typeLabel[r.type] }}の予定があります
+            {{ r.hospitalName }} {{ formatDateTime(r.arrivalDateTime) }} {{ typeLabel[r.type] }}の予定があります
           </div>
 
           <div class="flex flex-wrap gap-1.5 mt-1 mb-3">
